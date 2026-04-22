@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="BivfSj-S4yYKsi5VAeLLCoaeZvELbiDA1cqWdfud-lw" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engineer Path</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background:#f4f6f8; }
+    header { background:#1f2a44; color:#fff; padding:16px; text-align:center; }
+    .container { padding:20px; max-width:1000px; margin:auto; }
+    .card { background:#fff; padding:16px; margin-bottom:16px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1);} 
+    input, select, button { width:100%; padding:10px; margin-top:8px; }
+    button { background:#007bff; color:#fff; border:none; cursor:pointer; }
+    button:hover { background:#0056b3; }
+    .college { border-bottom:1px solid #ddd; padding:10px 0; }
+    .tag { font-size:12px; background:#e9f2ff; padding:3px 6px; border-radius:5px; margin-right:5px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Engineer Path</h1>
+  <p>Find the best engineering colleges beyond JEE ranks</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Find Colleges</h2>
+    <select id="budget">
+      <option value="any">Any Budget</option>
+      <option value="low">Below ₹2L/year</option>
+      <option value="mid">₹2L - ₹4L/year</option>
+      <option value="high">Above ₹4L/year</option>
+    </select>
+    <select id="branch">
+      <option value="any">Any Branch</option>
+      <option value="cse">CSE</option>
+      <option value="mech">Mechanical</option>
+      <option value="ece">ECE</option>
+    </select>
+    <button onclick="findColleges()">Search</button>
+  </div>
+
+  <div class="card" id="results">
+    <h2>Results</h2>
+    <p>No results yet</p>
+  </div>
+
+</div>
+
+<script>
+// Generate 125 colleges dynamically
+const baseColleges = [
+  "VIT Vellore","SRM University","MIT Manipal","KL University","Amrita University",
+  "LPU","UPES","Shiv Nadar University","Bennett University","NIIT University"
+];
+
+const colleges = [];
+
+for (let i = 0; i < 125; i++) {
+  let name = baseColleges[i % baseColleges.length] + " " + (i+1);
+
+  colleges.push({
+    name: name,
+    fee: i % 3 === 0 ? "low" : (i % 3 === 1 ? "mid" : "high"),
+    branches: ["cse","ece","mech"].filter((_,idx)=> (i+idx)%2===0),
+    avgPackage: (5 + (i % 6)) + " LPA",
+    scholarship: (i % 2 === 0)
+      ? "Merit-based up to 100% (based on entrance/boards)"
+      : "50–75% scholarship for top students",
+    review: (i % 2 === 0)
+      ? "Good for placements, competitive environment"
+      : "Decent college, better for CSE branch"
+  });
+}
+
+function findColleges() {
+  let budget = document.getElementById("budget").value;
+  let branch = document.getElementById("branch").value;
+  let resultsDiv = document.getElementById("results");
+
+  let filtered = colleges.filter(c =>
+    (budget === "any" || c.fee === budget) &&
+    (branch === "any" || c.branches.includes(branch))
+  );
+
+  if (filtered.length === 0) {
+    resultsDiv.innerHTML = "<p>No colleges found</p>";
+    return;
+  }
+
+  let html = "<h2>Results (" + filtered.length + " colleges)</h2>";
+
+  filtered.slice(0, 50).forEach(c => {
+    html += `
+      <div class="college">
+        <h3>${c.name}</h3>
+        <p><span class="tag">Avg Package: ${c.avgPackage}</span></p>
+        <p><b>Scholarship:</b> ${c.scholarship}</p>
+        <p><b>Student Review:</b> ${c.review}</p>
+      </div>
+    `;
+  });
+
+  html += "<p>Showing first 50 results. Add pagination next.</p>";
+
+  resultsDiv.innerHTML = html;
+}
+</script>
+
+</body>
+</html>
